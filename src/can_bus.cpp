@@ -58,7 +58,7 @@ CAN_CLOCK resolveCanClock() {
 }
 }
 
-CanBus::CanBus() : spi_(VSPI), mcp2515_(config::kCanChipSelectPin, &spi_) {}
+CanBus::CanBus() : spi_(VSPI), mcp2515_(config::kCanChipSelectPin, MCP2515::DEFAULT_SPI_CLOCK, &spi_) {}
 
 bool CanBus::begin() {
   pinMode(config::kCanInterruptPin, INPUT);
