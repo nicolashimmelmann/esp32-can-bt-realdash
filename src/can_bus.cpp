@@ -5,6 +5,8 @@
 #include "config.h"
 
 namespace {
+constexpr uint32_t kMcp2515SpiClockHz = 10000000;
+
 CAN_SPEED resolveCanSpeed() {
   switch (config::kCanSpeed) {
     case 5000:
@@ -58,7 +60,7 @@ CAN_CLOCK resolveCanClock() {
 }
 }
 
-CanBus::CanBus() : spi_(VSPI), mcp2515_(config::kCanChipSelectPin, MCP2515::DEFAULT_SPI_CLOCK, &spi_) {}
+CanBus::CanBus() : spi_(VSPI), mcp2515_(config::kCanChipSelectPin, kMcp2515SpiClockHz, &spi_) {}
 
 bool CanBus::begin() {
   pinMode(config::kCanInterruptPin, INPUT);
