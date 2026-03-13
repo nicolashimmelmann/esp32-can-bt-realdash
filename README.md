@@ -93,6 +93,8 @@ Wichtig:
 - Als nächster Schritt ersetzen wir diese Testwerte durch echte, aus CAN decodierte Werte.
 - Die XML kann vorerst unverändert bleiben, solange die Byte-Belegung gleich bleibt.
 
+**Hinweis:** Target IDs für RealDash können unter https://realdash.net/manuals/targetid.php gefunden werden.
+
 ## Standard-Pinout
 
 Aktuell hinterlegt:
