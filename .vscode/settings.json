@@ -1,0 +1,28 @@
+{
+    "files.exclude": {
+        "**/.pio": true,
+        "**/.pioenvs": true,
+        "**/.piolibdeps": true,
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "**/.pio/build": true,
+        "**/.cache": true,
+        "**/.vscode/.pytest_cache": true
+    },
+    "files.watcherExclude": {
+        "**/.pio/**": true,
+        "**/.pioenvs/**": true,
+        "**/.piolibdeps/**": true,
+        "**/.git/**": true,
+        "**/.svn/**": true,
+        "**/.hg/**": true,
+        "**/CVS/**": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "**/.cache/**": true
+    }
+}
