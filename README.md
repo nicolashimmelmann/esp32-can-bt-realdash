@@ -1,8 +1,19 @@
-# esp32-can-bt-dashboard
+# ESP32 CAN-BT Dashboard
 
-ESP32 + MCP2515 + Bluetooth Classic SPP + RealDash.
+ESP32-based CAN bus to Bluetooth bridge for RealDash compatibility.
 
-## Ziel
+## Features
+
+- CAN bus communication via MCP2515
+- Bluetooth connectivity for mobile dashboard apps
+- RealDash protocol support
+- Simple frame utilities
+
+## Setup
+
+1. Install PlatformIO
+2. Connect hardware according to pin configuration
+3. Upload firmware
 
 Der ESP32 liest CAN-Frames über MCP2515, verpackt sie in das `RealDash CAN`-Format und sendet sie per Bluetooth an RealDash.
 
