@@ -1,37 +1,38 @@
 <RealDashCAN version="1.0">
   <frames>
     <frame id="0x500" timeout="1000">
-      <value name="ESP32: Engine RPM" offset="0" length="2"></value>
-      <value name="ESP32: Vehicle Speed" offset="2" length="2" units="km/h" conversion="V/100"></value>
-      <value name="ESP32: Coolant Temp" offset="4" length="2" units="C" signed="true"
-        conversion="V/10"></value>
-      <value name="ESP32: Battery Voltage" offset="6" length="2" conversion="V/100"></value>
+      <value name="ECU: enginespeed" targetId="37" offset="0" length="2"></value>
+      <value name="ECU: glow_light" offset="2" length="2"></value>
+      <value name="ECU: effectiveapp" targetId="42" offset="4" length="2"></value>
+      <value name="ECU: ignsw" targetId="167" offset="6" length="2"></value>
     </frame>
 
     <frame id="0x501" timeout="1000">
-      <value name="ESP32: Throttle Position" offset="0" length="2" conversion="V/10"></value>
-      <value name="ESP32: Intake Air Temp" offset="2" length="2" units="C" signed="true"
-        conversion="V/10"></value>
-      <value name="ESP32: Manifold Pressure" offset="4" length="2" conversion="V/10"></value>
-      <value name="ESP32: Fuel Level" offset="6" length="2" conversion="V/10"></value>
+      <value name="ECU: coolanttemp" targetId="14" offset="0" length="2"></value>
+      <value name="ECU: oiltemp" targetId="152" offset="2" length="2"></value>
+      <value name="ECU: airtemp" targetId="27" offset="4" length="2"></value>
+      <value name="ECU: fueltemp" targetId="499" offset="6" length="2"></value>
     </frame>
 
     <frame id="0x502" timeout="1000">
-      <value name="ESP32: Oil Temp" offset="0" length="2" units="C" signed="true" conversion="V/10"></value>
-      <value name="ESP32: Oil Pressure" offset="2" length="2" conversion="V/100"></value>
-      <value name="ESP32: Boost Pressure" offset="4" length="2" signed="true" conversion="V/100"></value>
-      <value name="ESP32: CAN Status" offset="6" length="1" enum="0:Offline,1:Online,#:Unknown"></value>
+      <value name="ECU: oilpressure" targetId="151" offset="0" length="2"></value>
+      <value name="ECU: liftpressure" targetId="202" offset="2" length="2"></value>
+      <value name="ECU: map" targetId="31" offset="4" length="2"></value>
+      <value name="ECU: railpressure" targetId="202" offset="6" length="2"></value>
     </frame>
 
-    <frame id="0x503" timeout="1000">
-      <value name="ESP32: Check Engine" startbit="0" bitcount="1" units="bit"></value>
-      <value name="ESP32: High Beam" startbit="1" bitcount="1" units="bit"></value>
-      <value name="ESP32: Left Indicator" startbit="2" bitcount="1" units="bit"></value>
-      <value name="ESP32: Right Indicator" startbit="3" bitcount="1" units="bit"></value>
-      <value name="ESP32: Parking Brake" startbit="4" bitcount="1" units="bit"></value>
-      <value name="ESP32: ABS Warning" startbit="5" bitcount="1" units="bit"></value>
-      <value name="ESP32: Seatbelt" startbit="6" bitcount="1" units="bit"></value>
-      <value name="ESP32: Charge Warning" startbit="7" bitcount="1" units="bit"></value>
+    <frame id="0x504" timeout="1000">
+      <value name="ECU: railpressuretarget" targetId="270" offset="0" length="2"></value>
+      <value name="ECU: boosttarget" targetId="270" offset="2" length="2"></value>
+      <value name="ECU: const_zero_1" offset="4" length="2"></value>
+      <value name="ECU: const_zero_2" offset="6" length="2"></value>
+    </frame>
+
+    <frame id="0x505" timeout="1000">
+      <value name="ECU: transtemp" targetId="138" offset="0" length="2"></value>
+      <value name="ECU: totalfuelqty" targetId="170" offset="2" length="2"></value>
+      <value name="ECU: egt1" targetId="106" offset="4" length="2"></value>
+      <value name="ECU: cel" targetId="65" offset="6" length="2"></value>
     </frame>
   </frames>
 </RealDashCAN>
