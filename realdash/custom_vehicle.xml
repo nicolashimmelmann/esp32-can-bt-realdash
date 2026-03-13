@@ -3,15 +3,17 @@
     <frame id="0x500" timeout="1000">
       <value name="ECU: enginespeed" targetId="37" offset="0" length="2"></value>
       <value name="ECU: glow_light" offset="2" length="2"></value>
-      <value name="ECU: effectiveapp" targetId="42" offset="4" length="2"></value>
+      <value name="ECU: effectiveapp" targetId="42" offset="4" length="2"
+        conversion="(B1*256+B0)/10"></value>
       <value name="ECU: ignsw" targetId="167" offset="6" length="2"></value>
     </frame>
 
     <frame id="0x501" timeout="1000">
-      <value name="ECU: coolanttemp" targetId="14" offset="0" length="2"></value>
-      <value name="ECU: oiltemp" targetId="152" offset="2" length="2"></value>
-      <value name="ECU: airtemp" targetId="27" offset="4" length="2"></value>
-      <value name="ECU: fueltemp" targetId="499" offset="6" length="2"></value>
+      <value name="ECU: coolanttemp" targetId="14" offset="0" length="2" units="C"
+        conversion="V/10-273.15"></value>
+      <value name="ECU: oiltemp" targetId="152" offset="2" length="2" conversion="V/10-273.15"></value>
+      <value name="ECU: airtemp" targetId="27" offset="4" length="2" conversion="V/10-273.15"></value>
+      <value name="ECU: fueltemp" targetId="499" offset="6" length="2" conversion="V/10-273.15"></value>
     </frame>
 
     <frame id="0x502" timeout="1000">
@@ -29,7 +31,7 @@
     </frame>
 
     <frame id="0x505" timeout="1000">
-      <value name="ECU: transtemp" targetId="138" offset="0" length="2"></value>
+      <value name="ECU: transtemp" targetId="138" offset="0" length="2" conversion="V/10-273.15"></value>
       <value name="ECU: totalfuelqty" targetId="170" offset="2" length="2"></value>
       <value name="ECU: egt1" targetId="106" offset="4" length="2"></value>
       <value name="ECU: cel" targetId="65" offset="6" length="2"></value>
