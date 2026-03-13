@@ -27,7 +27,7 @@ Das Projekt enthält ein minimales Grundgerüst:
 
 - startet Bluetooth Classic mit Geräte-Namen aus `config.h`
 - initialisiert MCP2515
-- enthält den MCP2515-Startpfad für spätere CAN-Anbindung
+- enthält einen Normalbetrieb für echte CAN-Frames via MCP2515
 - erzeugt aktuell virtuelle RealDash-Testframes `0x500` bis `0x503`
 - sendet diese bei aktiver Bluetooth-Verbindung passend zur XML weiter
 - enthält eine erste RealDash-XML für virtuelle ESP32-Frames
@@ -43,7 +43,7 @@ In `include/config.h` prüfen/anpassen:
 - `kCanInterruptPin`
 - `kCanSpeed`
 - `kCanClockMHz`
-- Frame-Filterbereich
+- `kForwardedFrameIds`
 
 ## Betriebsmodi
 
@@ -52,6 +52,11 @@ In `include/config.h` umschaltbar:
 - `config::RunMode::kRealDashTestFrames`
   - sendet virtuelle Testframes `0x500` bis `0x503`
   - passt direkt zur `realdash/custom_vehicle.xml`
+
+- `config::RunMode::kNormalOperation`
+  - liest echte CAN-Frames vom MCP2515
+  - filtert auf Standard-Frames in `kForwardedFrameIds`
+  - leitet passende Frames als RealDash-`44`-Frames per Bluetooth weiter
 
 - `config::RunMode::kCanSniffer`
   - liest echte CAN-Frames vom MCP2515
@@ -91,6 +96,7 @@ Aktuell hinterlegt:
 
 - `kCanClockMHz` muss zum MCP2515-Quarz passen, meist `8` oder `16`.
 - `kCanSpeed` muss zur Fahrzeug-Bitrate passen.
+- Im Normalbetrieb leitet die Firmware gefilterte Standard-CAN-Frames direkt an RealDash weiter.
 - Im Sniffer-Modus kannst du echte Fahrzeug-Frames auf dem seriellen Monitor sehen.
 - Im Testframe-Modus sendet die Firmware weiter **virtuelle Testframes**.
 - Das ist weiter ein Startgerüst, noch keine finale Signalzuordnung für ein konkretes Fahrzeug.
