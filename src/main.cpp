@@ -7,6 +7,7 @@
 #include "bluetooth_link.h"
 #include "can_bus.h"
 #include "config.h"
+#include "frame_utils.h"
 #include "realdash_protocol.h"
 
 namespace {
@@ -19,16 +20,26 @@ bool shouldForwardFrame(const CanFrame& frame) {
     return false;
   }
 
-  return frame.id >= config::kForwardedFrameMinId && frame.id <= config::kForwardedFrameMaxId;
+  for (uint32_t forwardedFrameId : config::kForwardedFrameIds) {
+    if (frame.id == forwardedFrameId) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
-void writeUInt16(uint8_t* data, size_t offset, uint16_t value) {
-  data[offset] = static_cast<uint8_t>(value & 0xFF);
-  data[offset + 1] = static_cast<uint8_t>((value >> 8) & 0xFF);
-}
-
-void writeInt16(uint8_t* data, size_t offset, int16_t value) {
-  writeUInt16(data, offset, static_cast<uint16_t>(value));
+const char* getRunModeName(config::RunMode mode) {
+  switch (mode) {
+    case config::RunMode::kNormalOperation:
+      return "normal-operation";
+    case config::RunMode::kRealDashTestFrames:
+      return "realdash-testframes";
+    case config::RunMode::kCanSniffer:
+      return "can-sniffer";
+    default:
+      return "unknown";
+  }
 }
 
 void sendVirtualFrame(uint32_t frameId, const uint8_t* payload) {
@@ -65,23 +76,23 @@ void sendTestFrames() {
   const int16_t boostScaled = static_cast<int16_t>((-0.15F + 0.95F * sin(phase * 1.3F)) * 100.0F);
 
   uint8_t frame500[8] = {0};
-  writeUInt16(frame500, 0, rpm);
-  writeUInt16(frame500, 2, speedScaled);
-  writeInt16(frame500, 4, coolantScaled);
-  writeUInt16(frame500, 6, batteryScaled);
+  frame_utils::writeUInt16(frame500, 0, rpm);
+  frame_utils::writeUInt16(frame500, 2, speedScaled);
+  frame_utils::writeInt16(frame500, 4, coolantScaled);
+  frame_utils::writeUInt16(frame500, 6, batteryScaled);
   sendVirtualFrame(0x500, frame500);
 
   uint8_t frame501[8] = {0};
-  writeUInt16(frame501, 0, throttleScaled);
-  writeInt16(frame501, 2, intakeScaled);
-  writeUInt16(frame501, 4, mapScaled);
-  writeUInt16(frame501, 6, fuelScaled);
+  frame_utils::writeUInt16(frame501, 0, throttleScaled);
+  frame_utils::writeInt16(frame501, 2, intakeScaled);
+  frame_utils::writeUInt16(frame501, 4, mapScaled);
+  frame_utils::writeUInt16(frame501, 6, fuelScaled);
   sendVirtualFrame(0x501, frame501);
 
   uint8_t frame502[8] = {0};
-  writeInt16(frame502, 0, oilTempScaled);
-  writeUInt16(frame502, 2, oilPressureScaled);
-  writeInt16(frame502, 4, boostScaled);
+  frame_utils::writeInt16(frame502, 0, oilTempScaled);
+  frame_utils::writeUInt16(frame502, 2, oilPressureScaled);
+  frame_utils::writeInt16(frame502, 4, boostScaled);
   frame502[6] = 1;
   sendVirtualFrame(0x502, frame502);
 
@@ -125,14 +136,7 @@ void logCanFrame(const CanFrame& frame) {
   Serial.printf("[CAN] id=0x%03lX dlc=%u data=%s\n", static_cast<unsigned long>(frame.id), frame.dlc, payload);
 }
 
-void runCanSniffer() {
-  CanFrame frame;
-  if (!canBus.readFrame(frame)) {
-    return;
-  }
-
-  logCanFrame(frame);
-
+void relayFrameToRealDash(const CanFrame& frame) {
   if (!shouldForwardFrame(frame)) {
     return;
   }
@@ -141,6 +145,25 @@ void runCanSniffer() {
   if (encodedLength > 0 && bluetoothLink.isConnected()) {
     bluetoothLink.write(transportBuffer, encodedLength);
   }
+}
+
+void runNormalOperation() {
+  CanFrame frame;
+  if (!canBus.readFrame(frame)) {
+    return;
+  }
+
+  relayFrameToRealDash(frame);
+}
+
+void runCanSniffer() {
+  CanFrame frame;
+  if (!canBus.readFrame(frame)) {
+    return;
+  }
+
+  logCanFrame(frame);
+  relayFrameToRealDash(frame);
 }
 }
 
@@ -153,14 +176,20 @@ void setup() {
 
   const bool canStarted = canBus.begin();
   Serial.printf("[CAN] start: %s\n", canStarted ? "ok" : "failed");
-  Serial.printf("[MODE] %s\n", config::kRunMode == config::RunMode::kCanSniffer ? "can-sniffer" : "realdash-testframes");
+  Serial.printf("[MODE] %s\n", getRunModeName(config::kRunMode));
 }
 
 void loop() {
-  if (config::kRunMode == config::RunMode::kCanSniffer) {
-    runCanSniffer();
-  } else {
-    sendTestFrames();
+  switch (config::kRunMode) {
+    case config::RunMode::kNormalOperation:
+      runNormalOperation();
+      break;
+    case config::RunMode::kRealDashTestFrames:
+      sendTestFrames();
+      break;
+    case config::RunMode::kCanSniffer:
+      runCanSniffer();
+      break;
   }
   delay(config::kLoopDelayMs);
 }
